@@ -1,0 +1,11 @@
+{
+    "name": "set-theory",
+    "author": "Minh Quang Tran",
+    "dependencies": {},
+    "scripts": {
+        "gen-parser": "pegjs set-language.pegjs"
+    },
+    "devDependencies": {
+        "pegjs": "^0.10.0"
+    }
+}

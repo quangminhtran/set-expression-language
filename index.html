@@ -1,0 +1,92 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Develop a tiny DSL for set expressions</title>
+  
+  <style>
+  body {
+    font-family: "Helvetica Neue";
+  }
+  /* The alert message box */
+  .alert {
+      padding: 20px;
+      background-color: #f44336; /* Red */
+      color: white;
+      margin-bottom: 15px;
+   }
+
+   /* The green message box */
+  .ok {
+      padding: 20px;
+      background-color: #008000; /* green */
+      color: white;
+      margin-bottom: 15px;
+  }
+  </style>
+
+  <script src="set-language.js"></script>
+  <script src="lib/codemirror.js"></script>
+  <link rel="stylesheet" href="lib/codemirror.css">
+  <script src="mode/javascript/javascript.js"></script>
+
+  <!--[if lt IE 9]>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+
+  <h2> Enter a set expression: </h2>
+  <form>
+  <textarea id="myInput"></textarea>
+  </form>
+
+  <div id=myMessage></div>
+
+  <h2>Interpreted result</h2>
+  <textarea readonly id="myOutput" rows="5" cols="80"></textarea>
+
+  <script>
+  function toStringSet(set) {
+    if (!(set instanceof Set)) {
+      return JSON.stringify(set);
+    }
+    var a = [];
+    for (let e of set) {
+      a.push(JSON.stringify(e));
+    }
+    return "{" + a.join(",") + "}";
+  }
+  var outputTextArea = document.getElementById("myOutput");
+  //var setParser = require("./set.js");
+  var inputTextArea = document.getElementById("myInput")
+  var myCodeMirror = CodeMirror.fromTextArea(inputTextArea, {
+    lineNumbers: true
+  });
+
+  var myMessageDiv = document.getElementById("myMessage");
+
+  myCodeMirror.on("change", function (cm, change) {
+    myMessageDiv.innerHTML = "";
+    inputTextArea.value = cm.getValue();
+    outputTextArea.value = "";
+    console.log("|",inputTextArea.value,"|");
+
+    // Interpret code
+    try {
+      outputTextArea.value = toStringSet(peg$parse(inputTextArea.value)); 
+      myMessageDiv.innerHTML = "Valid program! See result in the ouput field.";
+      myMessageDiv.className = "ok";
+    } catch (error) {
+      myMessageDiv.innerHTML = error;
+      myMessageDiv.className = "alert";
+    }
+    
+  });
+
+
+  </script>
+</body>
+</html>
