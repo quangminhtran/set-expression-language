@@ -43,20 +43,23 @@ SetExpression
 
  SetConstant
   = "{" _ head:INTEGER? tail:(_ ',' _ INTEGER)* _ "}" {
-	 var setResult = new Set();
-	 if (head) {
- 		setResult.add(head);
+   var setResult = new Set();
+   if (head) {
+    setResult.add(head);
      }
 
-	 tail.forEach(function (element) {
-		setResult.add(element[3])
+   tail.forEach(function (element) {
+    setResult.add(element[3])
      });
-	 return setResult;
+   return setResult;
   }
 
 SetVariable
   = _ id:SetSymbol _ {
-        return idToSetContent.get(id);
+    if (!idToSetContent.has(id)) {
+      throw new Error(`Variable "${id}" is not defined`);
+    }
+  return idToSetContent.get(id);
 }
 
 LetExpression
@@ -65,9 +68,9 @@ LetExpression
  }
 
 Let
-  = _ 'let' _ id:SetSymbol _ "=" _ setconst:SetConstant _ {
+  = _ 'let' _ id:SetSymbol _ "=" _ expr:SetExpression _ {
    // Store map: set id -> set definition
-   idToSetContent.set(id, setconst);
+   idToSetContent.set(id, expr);
   }
 
  SetUnion
