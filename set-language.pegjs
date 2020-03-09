@@ -95,7 +95,8 @@ INTEGER "integer"
   = _ [0-9]+ { return parseInt(text(), 10); }
 
 SetSymbol "Set symbols"
-  = "S1" / "S2" / "S3" / "S4" / "S5" / "S6"
+//  = _ ([a-z]/[A-Z])+ { return text(); }
+  = "S"INTEGER { return text(); }
 
 _ "whitespace"
   = [ \t\n\r]*
